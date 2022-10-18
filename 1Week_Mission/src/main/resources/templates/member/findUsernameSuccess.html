@@ -1,0 +1,12 @@
+<html layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="container my-3">
+    <div class="my-3 border-bottom">
+        <div>
+            <h4>아이디 찾기</h4>
+        </div>
+    </div>
+    <div th:each="username, loop : ${usernameList}">
+        <div th:text="${username}"></div>
+    </div>
+</div>
+</html>
