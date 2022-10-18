@@ -17,6 +17,8 @@ public class MemberContext extends User {
 
     private final String email;
 
+    private final String nickname;
+
     @Setter
     private LocalDateTime modifyDate;
 
@@ -24,6 +26,7 @@ public class MemberContext extends User {
         super(member.getUsername(), member.getPassword(), authorities);
         this.id = member.getId();
         this.email = member.getEmail();
+        this.nickname = member.getNickname();
         this.modifyDate = member.getModifyDate();
     }
 

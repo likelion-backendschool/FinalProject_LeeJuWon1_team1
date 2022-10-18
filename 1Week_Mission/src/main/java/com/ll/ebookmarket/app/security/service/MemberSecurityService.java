@@ -24,7 +24,12 @@ public class MemberSecurityService implements UserDetailsService {
         Member member = memberRepository.findByUsername(username).get();
 
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("member"));
+
+        switch (member.getAuthLevel()) {
+            case 3 -> authorities.add(new SimpleGrantedAuthority("USER"));
+            case 4 -> authorities.add(new SimpleGrantedAuthority("AUTHOR"));
+            case 7 -> authorities.add(new SimpleGrantedAuthority("ADMIN"));
+        }
 
         return new MemberContext(member, authorities);
     }

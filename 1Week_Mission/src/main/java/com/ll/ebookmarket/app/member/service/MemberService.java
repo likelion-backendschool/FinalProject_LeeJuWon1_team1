@@ -59,4 +59,24 @@ public class MemberService {
         member.setPassword(passwordEncoder.encode(password));
         this.memberRepository.save(member);
     }
+
+    public void modify(Member member, String email, String nickname) {
+        if(!email.isBlank()) {
+            member.setEmail(email);
+        }
+
+        if(nickname.isBlank()) {
+            member.setAuthLevel(3);
+        } else {
+            member.setNickname(nickname);
+            member.setAuthLevel(4);
+        }
+
+        this.memberRepository.save(member);
+    }
+
+    public boolean checkPassword(Member member, String checkPassword) {
+        String realPassword = member.getPassword();
+        return passwordEncoder.matches(checkPassword, realPassword);
+    }
 }

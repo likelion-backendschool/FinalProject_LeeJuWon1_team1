@@ -2,14 +2,16 @@ package com.ll.ebookmarket.app.member.controller;
 
 import com.ll.ebookmarket.app.mail.dto.MailDto;
 import com.ll.ebookmarket.app.mail.service.MailService;
-import com.ll.ebookmarket.app.member.dto.FindPasswordForm;
-import com.ll.ebookmarket.app.member.dto.FindUsernameForm;
-import com.ll.ebookmarket.app.member.dto.MemberCreateForm;
+import com.ll.ebookmarket.app.member.dto.*;
 import com.ll.ebookmarket.app.member.entity.Member;
 import com.ll.ebookmarket.app.member.exception.MemberNotFoundException;
 import com.ll.ebookmarket.app.member.service.MemberService;
+import com.ll.ebookmarket.app.security.dto.MemberContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -129,5 +132,63 @@ public class MemberController {
             bindingResult.reject("findUsernameFailed", "해당 이메일로 가입한 아이디를 찾을 수 없습니다.");
             return "member/findPassword";
         }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile")
+    public String getProfile() {
+        return "member/profile";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify")
+    public String modify(MemberModifyForm memberModifyForm) {
+        return "member/modify";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify")
+    public String modify(Principal principal, @Valid MemberModifyForm memberModifyForm, BindingResult bindingResult) {
+        if(memberModifyForm.getNickname().isBlank() && memberModifyForm.getEmail().isBlank()){
+            bindingResult.reject("memberModifyFormIsAllNull", "수정하고 싶은 값을 넣어주세요.");
+            return "member/modify";
+        }
+
+        Member member = memberService.findByUsername(principal.getName());
+
+        memberService.modify(member, memberModifyForm.getEmail(), memberModifyForm.getNickname());
+        return "member/profile";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modifyPassword")
+    public String modifyPassword(MemberModifyPasswordForm memberModifyPasswordForm) {
+        return "member/modifyPassword";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modifyPassword")
+    public String modifyPassword(Principal principal, @Valid MemberModifyPasswordForm memberModifyPasswordForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "member/modifyPassword";
+        }
+
+        Member member = memberService.findByUsername(principal.getName());
+
+        if (!memberService.checkPassword(member, memberModifyPasswordForm.getOldPassword())) {
+            bindingResult.rejectValue("oldPassword", "passwordInCorrect",
+                    "이전 비밀번호가 일치하지 않습니다.");
+            return "member/modifyPassword";
+        }
+
+        if (!memberModifyPasswordForm.getPassword().equals(memberModifyPasswordForm.getPasswordConfirm())) {
+            bindingResult.rejectValue("passwordConfirm", "passwordInCorrect",
+                    "2개의 패스워드가 일치하지 않습니다.");
+            return "member/modifyPassword";
+        }
+
+        memberService.modifyPassword(member, memberModifyPasswordForm.getPassword());
+
+        return "member/profile";
     }
 }
