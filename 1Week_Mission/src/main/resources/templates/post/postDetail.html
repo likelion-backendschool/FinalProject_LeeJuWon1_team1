@@ -12,6 +12,7 @@
                 <div th:text="${post.author.username}" class="m-0 text-right"></div>
             </div>
         </div>
+        <th:block th:utext="${post.extra_hashTagLinks}"/>
         <div class="card-body">
             <div style="display: none" id="hiddenContent" th:text="${post.content}"></div>
             <div id="viewer"></div>

@@ -5,6 +5,7 @@
 <div layout:fragment="content" class="main-content-container container px-4 mt-3">
     <div class="card card-small mb-3 mt-5">
         <div class="card-body">
+
             <form th:object="${postForm}" class="add-new-post" id="form_post" method="post">
                 <div th:replace="error/form_error :: formErrorsFragment"></div>
                 <input th:field="*{subject}" class="form-control form-control-lg mb-3" type="text" placeholder="제목을 입력해주세요">

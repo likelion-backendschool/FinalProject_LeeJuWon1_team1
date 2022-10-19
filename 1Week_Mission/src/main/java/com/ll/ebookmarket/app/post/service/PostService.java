@@ -1,6 +1,7 @@
 package com.ll.ebookmarket.app.post.service;
 
 import com.ll.ebookmarket.app.base.exception.DataNotFoundException;
+import com.ll.ebookmarket.app.hashtag.entity.HashTag;
 import com.ll.ebookmarket.app.hashtag.service.HashTagService;
 import com.ll.ebookmarket.app.member.entity.Member;
 import com.ll.ebookmarket.app.post.entity.Post;
@@ -14,7 +15,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Service
@@ -37,6 +42,14 @@ public class PostService {
         } else {
             throw new DataNotFoundException("Post not found");
         }
+    }
+
+    public Post getForPrintPostById(Long id) {
+        Post post = getPostById(id);
+
+        loadForPrintData(post);
+
+        return post;
     }
 
     public void write(Member author, String subject, String content, String contentHtml, String hashTagContents) {
@@ -65,4 +78,38 @@ public class PostService {
     public void delete(Post post) {
         this.postRepository.delete(post);
     }
+
+    public List<Post> search(String kwType, String kw) {
+        return postRepository.searchQsl(kwType, kw);
+    }
+
+    public void loadForPrintData(Post post) {
+        List<HashTag> hashTags = hashTagService.getHashTags(post);
+
+        post.getExtra().put("hashTags", hashTags);
+    }
+
+    public void loadForPrintData(Page<Post> posts) {
+        long[] ids = posts
+                .stream()
+                .mapToLong(Post::getId)
+                .toArray();
+
+        List<HashTag> hashTagsByArticleIds = hashTagService.getHashTagsByPostIdIn(ids);
+
+        Map<Long, List<HashTag>> hashTagsByArticleIdsMap = hashTagsByArticleIds.stream()
+                .collect(groupingBy(
+                        hashTag -> hashTag.getPost().getId(), toList()
+                ));
+
+        posts.stream().forEach(post -> {
+            List<HashTag> hashTags = hashTagsByArticleIdsMap.get(post.getId());
+
+            if (hashTags == null || hashTags.size() == 0) return;
+
+            post.getExtra().put("hashTags", hashTags);
+        });
+    }
+
+
 }
