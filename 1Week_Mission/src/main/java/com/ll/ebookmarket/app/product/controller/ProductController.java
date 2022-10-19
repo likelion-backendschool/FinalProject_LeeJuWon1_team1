@@ -1,9 +1,12 @@
 package com.ll.ebookmarket.app.product.controller;
 
+import com.ll.ebookmarket.app.hashtag.entity.HashTag;
 import com.ll.ebookmarket.app.keyword.entity.Keyword;
 import com.ll.ebookmarket.app.keyword.service.KeywordService;
 import com.ll.ebookmarket.app.member.entity.Member;
 import com.ll.ebookmarket.app.member.service.MemberService;
+import com.ll.ebookmarket.app.post.entity.Post;
+import com.ll.ebookmarket.app.post.service.PostService;
 import com.ll.ebookmarket.app.product.dto.ProductForm;
 import com.ll.ebookmarket.app.product.entity.Product;
 import com.ll.ebookmarket.app.product.service.ProductService;
@@ -19,6 +22,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequestMapping("/product")
 @RequiredArgsConstructor
@@ -26,6 +33,7 @@ import java.security.Principal;
 public class ProductController {
 
     private final ProductService productService;
+    private final PostService postService;
     private final MemberService memberService;
     private final KeywordService keywordService;
 
@@ -49,7 +57,16 @@ public class ProductController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/write")
-    public String productWrite(ProductForm productForm) {
+    public String productWrite(Model model, ProductForm productForm, Principal principal) {
+        Member member = memberService.findByUsername(principal.getName());
+        List<Post> myPostList = postService.findMyAllList(member);
+        List<Keyword> keywordList = myPostList.stream()
+                .map(Post::getHashtagList)
+                .flatMap(Collection::stream)
+                .map(HashTag::getKeyword)
+                .distinct().toList();
+
+        model.addAttribute("keywordList", keywordList);
         return "product/productForm";
     }
 
@@ -61,10 +78,9 @@ public class ProductController {
         }
 
         Member member = this.memberService.findByUsername(principal.getName());
-        Keyword keyword = this.keywordService.findById(productForm.getKeywordId());
+        Keyword keyword = this.keywordService.findByContent(productForm.getKeywordContent());
 
-        this.productService.write(member, productForm.getSubject(), productForm.getPrice(), keyword);
-
+        this.productService.write(member, productForm.getSubject(), Integer.parseInt(productForm.getPrice()), keyword);
         return "redirect:/product/list";
     }
 
@@ -78,7 +94,7 @@ public class ProductController {
         }
 
         productForm.setSubject(product.getSubject());
-        productForm.setPrice(product.getPrice());
+        productForm.setPrice(product.getPrice().toString());
 
         return "product/productForm";
     }
@@ -92,12 +108,12 @@ public class ProductController {
         }
 
         Product product = this.productService.getProductById(id);
-        Keyword keyword = this.keywordService.findById(productForm.getKeywordId());
+        Keyword keyword = this.keywordService.findByContent(productForm.getKeywordContent());
 
         if (!product.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.productService.modify(product, productForm.getSubject(), productForm.getPrice(), keyword);
+        this.productService.modify(product, productForm.getSubject(), Integer.parseInt(productForm.getPrice()), keyword);
 
         return String.format("redirect:/product/%s", id);
     }

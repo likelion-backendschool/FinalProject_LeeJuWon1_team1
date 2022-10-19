@@ -34,4 +34,10 @@ public class KeywordService {
 
         return optKeyword.orElse(null);
     }
+
+    public Keyword findByContent(String content) {
+        Optional<Keyword> optKeyword = keywordRepository.findByContent(content);
+
+        return optKeyword.orElse(null);
+    }
 }

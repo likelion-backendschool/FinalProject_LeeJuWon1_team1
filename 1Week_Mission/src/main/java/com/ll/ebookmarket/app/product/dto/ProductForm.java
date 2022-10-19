@@ -14,8 +14,8 @@ public class ProductForm {
     private String subject;
 
     @NotEmpty(message="가격은 필수항목입니다.")
-    private Integer price;
+    private String price;
 
     @NotEmpty(message="키워드는는 반드시 선택하여야 합니다.")
-    private Long keywordId;
+    private String keywordContent;
 }

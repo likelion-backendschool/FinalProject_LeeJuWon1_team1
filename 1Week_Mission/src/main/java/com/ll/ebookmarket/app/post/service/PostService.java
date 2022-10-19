@@ -133,5 +133,9 @@ public class PostService {
         });
     }
 
+    public List<Post> findMyAllList(Member author) {
+        return postRepository.findAllByAuthor(author);
+    }
+
 
 }
