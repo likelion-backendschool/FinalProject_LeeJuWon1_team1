@@ -68,7 +68,9 @@ public class PostController {
         if(!post.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        model.addAttribute("post", post);
+        postForm.setSubject(post.getSubject());
+        postForm.setContent(post.getContent());
+        postForm.setHashTagContents(post.getExtra_inputValue_hashTagContents());
         return "post/postForm";
     }
     
