@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping("/post")
 @RequiredArgsConstructor
@@ -98,12 +99,10 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public String postDelete(Principal principal, @PathVariable("id") Long id) {
-        Post post = this.postService.getPostById(id);
-        if (!post.getAuthor().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
-        }
-        this.postService.delete(post);
-        return "redirect:/post/list";
+    public String search(Model model, Principal principal, @RequestParam("kwType") String kwType, @RequestParam("kw") String kw) {
+        List<Post> postList = this.postService.search(kwType, kw);
+        this.postService.loadForPrintData(postList);
+        model.addAttribute("postList", postList);
+        return "post/postSearchList";
     }
 }

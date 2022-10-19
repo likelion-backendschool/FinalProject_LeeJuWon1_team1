@@ -89,6 +89,28 @@ public class PostService {
         post.getExtra().put("hashTags", hashTags);
     }
 
+    public void loadForPrintData(List<Post> posts) {
+        long[] ids = posts
+                .stream()
+                .mapToLong(Post::getId)
+                .toArray();
+
+        List<HashTag> hashTagsByArticleIds = hashTagService.getHashTagsByPostIdIn(ids);
+
+        Map<Long, List<HashTag>> hashTagsByArticleIdsMap = hashTagsByArticleIds.stream()
+                .collect(groupingBy(
+                        hashTag -> hashTag.getPost().getId(), toList()
+                ));
+
+        posts.stream().forEach(post -> {
+            List<HashTag> hashTags = hashTagsByArticleIdsMap.get(post.getId());
+
+            if (hashTags == null || hashTags.size() == 0) return;
+
+            post.getExtra().put("hashTags", hashTags);
+        });
+    }
+
     public void loadForPrintData(Page<Post> posts) {
         long[] ids = posts
                 .stream()
