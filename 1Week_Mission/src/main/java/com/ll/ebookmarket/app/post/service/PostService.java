@@ -1,6 +1,7 @@
 package com.ll.ebookmarket.app.post.service;
 
 import com.ll.ebookmarket.app.base.exception.DataNotFoundException;
+import com.ll.ebookmarket.app.hashtag.service.HashTagService;
 import com.ll.ebookmarket.app.member.entity.Member;
 import com.ll.ebookmarket.app.post.entity.Post;
 import com.ll.ebookmarket.app.post.repository.PostRepository;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final HashTagService hashTagService;
 
     public Page<Post> getList(int page) {
         List<Sort.Order> sorts = new ArrayList<>();
@@ -37,7 +39,7 @@ public class PostService {
         }
     }
 
-    public void write(Member author, String subject, String content, String contentHtml) {
+    public void write(Member author, String subject, String content, String contentHtml, String hashTagContents) {
         Post post = Post
                 .builder()
                 .author(author)
@@ -47,13 +49,17 @@ public class PostService {
                 .build();
 
         this.postRepository.save(post);
+
+        hashTagService.applyHashTags(post, hashTagContents);
     }
 
-    public void modify(Post post, String subject, String content, String contentHtml) {
+    public void modify(Post post, String subject, String content, String contentHtml, String hashTagContents) {
         post.setSubject(subject);
         post.setContent(content);
         post.setContentHtml(contentHtml);
         this.postRepository.save(post);
+
+        hashTagService.applyHashTags(post, hashTagContents);
     }
 
     public void delete(Post post) {

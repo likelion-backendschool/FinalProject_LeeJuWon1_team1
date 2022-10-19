@@ -54,7 +54,7 @@ public class PostController {
         }
 
         Member member = this.memberService.findByUsername(principal.getName());
-        this.postService.write(member, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml());
+        this.postService.write(member, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml(), postForm.getHashTagContents());
         return "redirect:/post/list";
     }
 
@@ -81,7 +81,7 @@ public class PostController {
         if (!post.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.postService.modify(post, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml());
+        this.postService.modify(post, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml(), postForm.getHashTagContents());
         return String.format("redirect:/post/%s", id);
     }
 
