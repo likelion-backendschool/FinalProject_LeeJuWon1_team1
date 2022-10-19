@@ -35,7 +35,7 @@ public class PostController {
 
     @RequestMapping(value = "/{id}")
     public String detail(Model model, @PathVariable("id") Long id) {
-        Post post = this.postService.getPost(id);
+        Post post = this.postService.getPostById(id);
         model.addAttribute("post", post);
         return "post/postDetail";
     }
@@ -61,7 +61,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}/modify")
     public String postModify(PostForm postForm, @PathVariable("id") Long id, Principal principal) {
-        Post post = this.postService.getPost(id);
+        Post post = this.postService.getPostById(id);
         if(!post.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
@@ -77,7 +77,7 @@ public class PostController {
         if (bindingResult.hasErrors()) {
             return "post/postForm";
         }
-        Post post = this.postService.getPost(id);
+        Post post = this.postService.getPostById(id);
         if (!post.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
@@ -88,7 +88,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}/delete")
     public String postDelete(Principal principal, @PathVariable("id") Long id) {
-        Post post = this.postService.getPost(id);
+        Post post = this.postService.getPostById(id);
         if (!post.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }

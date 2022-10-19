@@ -8,6 +8,7 @@
             <form th:object="${postForm}" class="add-new-post" id="form_post" method="post">
                 <div th:replace="error/form_error :: formErrorsFragment"></div>
                 <input th:field="*{subject}" class="form-control form-control-lg mb-3" type="text" placeholder="제목을 입력해주세요">
+                <input th:field="*{hashTagContents}" class="form-control form-control-lg mb-3" type="text" placeholder="#태그1 #태그2">
                 <textarea th:field="*{content}" name="text" style="display: none" id="content"></textarea>
                 <textarea th:field="*{contentHtml}" name="text" style="display: none" id="contentHtml"></textarea>
                 <div id="editor"></div>

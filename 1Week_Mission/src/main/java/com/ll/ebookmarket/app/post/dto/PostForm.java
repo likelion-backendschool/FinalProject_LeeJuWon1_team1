@@ -18,6 +18,6 @@ public class PostForm {
 
     private String contentHtml;
 
-    @NotEmpty(message="키워드는 하나 이상 등록되어야 합니다.")
-    private String keywords;
+    @NotEmpty(message="해쉬태그는 하나 이상 등록되어야 합니다.")
+    private String hashTagContents;
 }

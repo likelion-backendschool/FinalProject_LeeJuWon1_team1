@@ -28,7 +28,7 @@ public class PostService {
         return this.postRepository.findAll(pageable);
     }
 
-    public Post getPost(Long id) {
+    public Post getPostById(Long id) {
         Optional<Post> post = this.postRepository.findById(id);
         if (post.isPresent()) {
             return post.get();
