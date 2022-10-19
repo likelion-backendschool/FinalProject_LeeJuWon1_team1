@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
     List<Post> findAllByAuthor(Member author);
+
+    List<Post> findTop100ByOrderByIdDesc();
 }

@@ -35,6 +35,10 @@ public class PostService {
         return this.postRepository.findAll(pageable);
     }
 
+    public List<Post> getListDesc100() {
+        return this.postRepository.findTop100ByOrderByIdDesc();
+    }
+
     public Post getPostById(Long id) {
         Optional<Post> post = this.postRepository.findById(id);
         if (post.isPresent()) {
