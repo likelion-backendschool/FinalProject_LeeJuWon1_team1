@@ -3,7 +3,12 @@
       layout:decorate="~{layout/layout}">
 
 <div layout:fragment="content" class="main-content-container container px-4 mt-3">
-    <div class="card card-small mb-3 mt-5">
+    <div class="page-header row no-gutters py-4">
+        <div class="col-12 text-center text-sm-left mb-4 mb-sm-0">
+            <h3 class="page-title">도서 등록</h3>
+        </div>
+    </div>
+    <div class="card card-small mb-3">
         <div class="card-body">
 
             <form th:object="${productForm}" class="add-new-post" id="form_post" method="post">

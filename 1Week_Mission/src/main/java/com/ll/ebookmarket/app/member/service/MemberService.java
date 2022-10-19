@@ -24,8 +24,8 @@ public class MemberService {
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .email(email)
-                .nickname("")
-                .authLevel((nickname != null) ? 3 : 4)
+                .nickname(nickname)
+                .authLevel((nickname.isBlank()) ? 3 : 4)
                 .build();
 
         memberRepository.save(member);

@@ -29,17 +29,4 @@ public class MemberContext extends User {
         this.nickname = member.getNickname();
         this.modifyDate = member.getModifyDate();
     }
-
-    @Override
-    public Set<GrantedAuthority> getAuthorities() {
-        return new HashSet<>(super.getAuthorities());
-    }
-
-    public boolean memberIs(Member member) {
-        return id.equals(member.getId());
-    }
-
-    public boolean memberIsNot(Member member) {
-        return !memberIs(member);
-    }
 }

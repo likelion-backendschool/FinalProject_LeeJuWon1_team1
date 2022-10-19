@@ -6,8 +6,10 @@ import com.ll.ebookmarket.app.member.entity.Member;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +30,9 @@ public class Post extends BaseEntity {
     private String content;
 
     private String contentHtml;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<HashTag> hashtagList;
 
     public String getExtra_inputValue_hashTagContents() {
         Map<String, Object> extra = getExtra();
