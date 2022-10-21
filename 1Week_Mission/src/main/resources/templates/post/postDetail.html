@@ -28,7 +28,7 @@
             <div class="ml-3 col mt-auto">
                 <a class="" th:href="@{/post/list}"><span>목록으로</span></a>
             </div>
-            <div sec:authorize="isAuthenticated()" class="col text-right pr-0"
+            <div sec:authorize="isAuthenticated()" class="col text-end me-2 pr-0"
                  th:if="${post.author != null and #authentication.getPrincipal().getUsername() == post.author.username}">
                 <a href="javascript:void(0);" th:data-uri="@{|/post/${post.id}/delete|}"
                    class="delete btn btn-primary mr-2"

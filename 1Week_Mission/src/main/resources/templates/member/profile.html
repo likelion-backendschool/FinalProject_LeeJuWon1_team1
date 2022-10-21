@@ -13,8 +13,8 @@
         <div>이메일 : <span th:text="${#authentication.principal.email}"></span></div>
     </div>
     <div>
-        <a class="nav-link" th:href="@{/member/modify}">회원정보 수정</a>
-        <a class="nav-link" th:href="@{/member/modifyPassword}">비밀번호 변경</a>
+        <a class="btn btn-primary" th:href="@{/member/modify}">회원정보 수정</a>
+        <a class="btn btn-primary" th:href="@{/member/modifyPassword}">비밀번호 변경</a>
     </div>
 </div>
 </html>

@@ -25,22 +25,19 @@ public class HashTagService {
 
         List<String> keywordContents = Arrays.stream(hashTagContents.split("#"))
                 .map(String::trim)
-                .filter(s -> s.length() > 0)
-                .collect(Collectors.toList());
+                .filter(s -> s.length() > 0).toList();
 
         List<HashTag> needToDelete = new ArrayList<>();
 
         for (HashTag oldHashTag : oldHashTags) {
             boolean contains = keywordContents.stream().anyMatch(s -> s.equals(oldHashTag.getKeyword().getContent()));
 
-            if (contains == false) {
+            if (!contains) {
                 needToDelete.add(oldHashTag);
             }
         }
 
-        needToDelete.forEach(hashTag -> {
-            hashTagRepository.delete(hashTag);
-        });
+        hashTagRepository.deleteAll(needToDelete);
 
         keywordContents.forEach(keywordContent -> {
             saveHashTag(post, keywordContent);

@@ -18,6 +18,7 @@ public class HomeController {
     @GetMapping("/")
     public String showMain(Model model) {
         List<Post> postList = postService.getListDesc100();
+        this.postService.loadForPrintData(postList);
 
         model.addAttribute("postList", postList);
         return "home/main";
