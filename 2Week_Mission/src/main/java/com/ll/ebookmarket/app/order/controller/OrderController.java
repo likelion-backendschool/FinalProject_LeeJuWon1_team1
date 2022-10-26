@@ -150,9 +150,9 @@ public class OrderController {
         return "order/fail";
     }
 
-    @PostMapping("/makeOrder")
+    @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
-    public String makeOrder(@AuthenticationPrincipal MemberContext memberContext) {
+    public String create(@AuthenticationPrincipal MemberContext memberContext) {
         Member member = memberContext.getMember();
         Order order = orderService.createFromCart(member);
 

@@ -35,6 +35,10 @@ public class CartService {
     public RsData addItem(Member buyer, Product product) {
         List<CartItem> items = getItemsByBuyer(buyer);
 
+        if(product.getAuthor().equals(buyer)){
+            return RsData.of("F-1", "자신의 도서는 장바구니에 담을 수 없습니다.");
+        }
+
         if(items.stream().anyMatch(cartItem -> cartItem.getProduct().equals(product))){
             return RsData.of("F-1", "이미 추가된 상품입니다.");
         }
