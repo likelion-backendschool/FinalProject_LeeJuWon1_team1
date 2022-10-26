@@ -22,6 +22,8 @@ public class AppConfig {
     private static String siteName;
     @Getter
     private static String siteBaseUrl;
+    @Getter
+    private static String secretKey;
 
     @Autowired
     public void setContext(ApplicationContext context) {
@@ -41,6 +43,11 @@ public class AppConfig {
     @Value("${custom.site.baseUrl}")
     public void setSiteBaseUrl(String siteBaseUrl) {
         AppConfig.siteBaseUrl = siteBaseUrl;
+    }
+
+    @Value("${toss.test.secretKey}")
+    public void setTossTestSecretKey(String secretKey) {
+        AppConfig.secretKey = secretKey;
     }
 
     public static boolean isNotProd() {

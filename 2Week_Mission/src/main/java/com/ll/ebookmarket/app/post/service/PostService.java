@@ -1,10 +1,13 @@
 package com.ll.ebookmarket.app.post.service;
 
 import com.ll.ebookmarket.app.member.entity.Member;
+import com.ll.ebookmarket.app.myBook.service.MyBookService;
 import com.ll.ebookmarket.app.post.entity.Post;
 import com.ll.ebookmarket.app.post.repository.PostRepository;
 import com.ll.ebookmarket.app.postTag.entity.PostTag;
 import com.ll.ebookmarket.app.postTag.service.PostTagService;
+import com.ll.ebookmarket.app.product.entity.Product;
+import com.ll.ebookmarket.app.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,8 @@ import static java.util.stream.Collectors.toList;
 public class PostService {
     private final PostRepository postRepository;
     private final PostTagService postTagService;
+    private final MyBookService myBookService;
+    private final ProductService productService;
 
     @Transactional
     public Post write(Member author, String subject, String content, String contentHtml, String postTagContents) {
@@ -130,6 +135,16 @@ public class PostService {
     public boolean actorCanSee(Member actor, Post post) {
         if ( actor == null ) return false;
         if ( post == null ) return false;
+
+        List<Product> products = myBookService.getProductsByMember(actor);
+        Optional<Post> any = products.stream().map(productService::findPostsByProduct)
+                .flatMap(List::stream)
+                .filter(post1 -> post1.equals(post))
+                .findAny();
+
+        if(any.isPresent()) {
+            return true;
+        }
 
         return post.getAuthor().getId().equals(actor.getId());
     }

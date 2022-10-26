@@ -57,17 +57,17 @@ public class NotProdInitData {
                     "#IT #프론트엔드 #리액트"
             );
 
-            postService.write(member2, "제목 3", "내용 3", "내용 3", "#IT# 프론트엔드 #HTML #CSS");
-            postService.write(member2, "제목 4", "내용 4", "내용 4", "#IT #스프링부트 #자바");
-            postService.write(member1, "제목 5", "내용 5", "내용 5", "#IT #자바 #카프카");
-            postService.write(member1, "제목 6", "내용 6", "내용 6", "#IT #프론트엔드 #REACT");
-            postService.write(member2, "제목 7", "내용 7", "내용 7", "#IT# 프론트엔드 #HTML #CSS");
-            postService.write(member2, "제목 8", "내용 8", "내용 8", "#IT #스프링부트 #자바");
+            postService.write(member2, "프론트 기초", "태그는 열고 닫아야 해요", "태그는 열고 닫아야 해요", "#IT# 프론트엔드 #HTML #CSS");
+            postService.write(member2, "스프링 기초", "스프링 MVC 패턴은 다음과 같아요", "스프링 MVC 패턴은 다음과 같아요", "#IT #스프링부트 #자바");
+            postService.write(member1, "카프카 정리", "프로듀서와 컨슈머 차이는...", "프로듀서와 컨슈머 차이는...", "#IT #자바 #카프카");
+            postService.write(member1, "리액트 기초", "리액트 훅은 다음과 같아요", "리액트 훅은 다음과 같아요", "#IT #프론트엔드 #REACT");
+            postService.write(member2, "프론트 기초2", "css파일 분리하는 방법이에요", "css파일 분리하는 방법이에요", "#IT# 프론트엔드 #HTML #CSS");
+            postService.write(member2, "스프링 기초2", "디펜던시 인젝션이란...", "디펜던시 인젝션이란...", "#IT #스프링부트 #자바");
 
-            Product product1 = productService.create(member1, "상품명1 상품명1 상품명1 상품명1 상품명1 상품명1", 30_000, "카프카", "#IT #카프카");
-            Product product2 = productService.create(member2, "상품명2", 40_000, "스프링부트", "#IT #REACT");
-            Product product3 = productService.create(member1, "상품명3", 50_000, "REACT", "#IT #REACT");
-            Product product4 = productService.create(member2, "상품명4", 60_000, "HTML", "#IT #HTML");
+            Product product1 = productService.create(member1, "카프카의 모든 것", 30_000, "카프카", "#IT #카프카");
+            Product product2 = productService.create(member2, "스프링 한눈에 보기", 40_000, "스프링부트", "#IT #자바");
+            Product product3 = productService.create(member1, "따라 치며 배우는 리액트", 50_000, "REACT", "#IT #REACT");
+            Product product4 = productService.create(member2, "유튜브 클론을 통해 배우는 HTML", 60_000, "HTML", "#IT #HTML");
 
         };
     }

@@ -27,8 +27,7 @@ public class PostTagService {
 
         List<String> postKeywordContents = Arrays.stream(postTagContents.split("#"))
                 .map(String::trim)
-                .filter(s -> s.length() > 0)
-                .collect(Collectors.toList());
+                .filter(s -> s.length() > 0).toList();
 
         List<PostTag> needToDelete = new ArrayList<>();
 

@@ -34,6 +34,6 @@ public class RsData<T> {
     }
 
     public boolean isFail() {
-        return isSuccess() == false;
+        return !isSuccess();
     }
 }

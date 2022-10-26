@@ -53,7 +53,7 @@ public class Product extends BaseEntity {
     public String getExtra_inputValue_hashTagContents() {
         Map<String, Object> extra = getExtra();
 
-        if (extra.containsKey("productTags") == false) {
+        if (!extra.containsKey("productTags")) {
             return "";
         }
 
@@ -73,7 +73,7 @@ public class Product extends BaseEntity {
     public String getExtra_productTagLinks() {
         Map<String, Object> extra = getExtra();
 
-        if (extra.containsKey("productTags") == false) {
+        if (!extra.containsKey("productTags")) {
             return "";
         }
 

@@ -2,6 +2,8 @@ package com.ll.ebookmarket.app.member.service;
 
 import com.ll.ebookmarket.app.AppConfig;
 import com.ll.ebookmarket.app.base.dto.RsData;
+import com.ll.ebookmarket.app.cash.entity.CashLog;
+import com.ll.ebookmarket.app.cash.service.CashService;
 import com.ll.ebookmarket.app.email.service.EmailService;
 import com.ll.ebookmarket.app.emailVerification.service.EmailVerificationService;
 import com.ll.ebookmarket.app.member.entity.Member;
@@ -9,6 +11,8 @@ import com.ll.ebookmarket.app.member.exception.AlreadyJoinException;
 import com.ll.ebookmarket.app.member.repository.MemberRepository;
 import com.ll.ebookmarket.app.security.dto.MemberContext;
 import com.ll.ebookmarket.util.Ut;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,6 +32,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
     private final EmailService emailService;
+    private final CashService cashService;
 
     @Transactional
     public Member join(String username, String password, String email, String nickname) {
@@ -57,7 +62,7 @@ public class MemberService {
     public RsData verifyEmail(long id, String verificationCode) {
         RsData verifyVerificationCodeRs = emailVerificationService.verifyVerificationCode(id, verificationCode);
 
-        if (verifyVerificationCodeRs.isSuccess() == false) {
+        if (!verifyVerificationCodeRs.isSuccess()) {
             return verifyVerificationCodeRs;
         }
 
@@ -102,7 +107,7 @@ public class MemberService {
     public RsData modifyPassword(Member member, String password, String oldPassword) {
         Optional<Member> opMember = memberRepository.findById(member.getId());
 
-        if (passwordEncoder.matches(oldPassword, opMember.get().getPassword()) == false) {
+        if (!passwordEncoder.matches(oldPassword, opMember.get().getPassword())) {
             return RsData.of("F-1", "기존 비밀번호가 일치하지 않습니다.");
         }
 
@@ -139,5 +144,33 @@ public class MemberService {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
+    }
+
+    @Transactional
+    public RsData<AddCashRsDataBody> addCash(Member member, long price, String eventType) {
+        CashLog cashLog = cashService.addCash(member, price, eventType);
+
+        long newRestCash = member.getRestCash() + cashLog.getPrice();
+        member.setRestCash(newRestCash);
+        memberRepository.save(member);
+
+        return RsData.of(
+                "S-1",
+                "성공",
+                new AddCashRsDataBody(cashLog, newRestCash)
+        );
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class AddCashRsDataBody {
+        CashLog cashLog;
+        long newRestCash;
+    }
+
+    public long getRestCash(Member member) {
+        Member foundMember = findByUsername(member.getUsername()).get();
+
+        return foundMember.getRestCash();
     }
 }
