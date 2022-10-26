@@ -114,4 +114,12 @@ public class Order extends BaseEntity {
         Duration duration = Duration.between(payDate, LocalDateTime.now());
         return duration.getSeconds() <= 600;
     }
+
+    public boolean isRefundable(LocalDateTime localDateTime) {
+        if ( !isPaid ) return false;
+        if ( isRefunded ) return false;
+
+        Duration duration = Duration.between(payDate, localDateTime);
+        return duration.getSeconds() <= 600;
+    }
 }
