@@ -27,6 +27,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -86,6 +87,9 @@ public class OrderController {
         if(order.isEmpty()){
             return rq.historyBack("존재하지 않는 주문입니다.");
         }
+        if(!order.get().isPayable()){
+            return rq.historyBack("주문취소가 불가능합니다.");
+        }
         orderService.cancel(order.get());
 
         return "redirect:/order/%d".formatted(id) + "?msg=" + Ut.url.encode("%d번 주문이 취소되었습니다.".formatted(id));
@@ -99,6 +103,13 @@ public class OrderController {
         if(order.isEmpty()){
             return rq.historyBack("존재하지 않는 주문입니다.");
         }
+        if(!order.get().isPaid() && order.get().isRefunded()){
+            return rq.historyBack("주문하지 않았거나 이미 환불 처리되었습니다.");
+        }
+        if(!order.get().isRefundable()){
+            return rq.historyBack("환불이 불가능합니다.");
+        }
+
         orderService.refund(order.get());
         return "redirect:/order/%d".formatted(id) + "?msg=" + Ut.url.encode("%d번 주문이 취소되었습니다.".formatted(id));
     }

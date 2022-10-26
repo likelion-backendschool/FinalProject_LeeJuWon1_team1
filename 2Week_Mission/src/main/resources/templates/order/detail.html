@@ -88,8 +88,11 @@
                     </div>
                 </div>
 
-                <button th:if="${order.isPaid && !order.isRefunded}" onclick="payRefund();" class="btn btn-sm btn-primary">환불요청</button>
-                <form method="POST" name="payRefundForm" th:action="@{|/order/${order.id}/refund|}" hidden></form>
+                <div th:if="${order.refundable}">
+                    <button onclick="payRefund();" class="btn btn-sm btn-primary">환불요청</button>
+                    <form method="POST" name="payRefundForm" th:action="@{|/order/${order.id}/refund|}" hidden></form>
+                    <span>10분 이내로만 환불이 가능합니다</span>
+                </div>
             </div>
         </div>
     </section>

@@ -2,6 +2,7 @@ package com.ll.ebookmarket.app.order.entity;
 
 import com.ll.ebookmarket.app.base.entity.BaseEntity;
 import com.ll.ebookmarket.app.member.entity.Member;
+import com.ll.ebookmarket.util.Ut;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,5 +104,13 @@ public class Order extends BaseEntity {
         if ( isCanceled ) return false;
 
         return true;
+    }
+
+    public boolean isRefundable() {
+        if ( !isPaid ) return false;
+        if ( isRefunded ) return false;
+
+        Duration duration = Duration.between(payDate, LocalDateTime.now());
+        return duration.getSeconds() <= 600;
     }
 }
