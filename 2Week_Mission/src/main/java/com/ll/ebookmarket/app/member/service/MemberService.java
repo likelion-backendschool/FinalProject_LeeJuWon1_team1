@@ -62,7 +62,7 @@ public class MemberService {
     public RsData verifyEmail(long id, String verificationCode) {
         RsData verifyVerificationCodeRs = emailVerificationService.verifyVerificationCode(id, verificationCode);
 
-        if (verifyVerificationCodeRs.isSuccess() == false) {
+        if (!verifyVerificationCodeRs.isSuccess()) {
             return verifyVerificationCodeRs;
         }
 
@@ -107,7 +107,7 @@ public class MemberService {
     public RsData modifyPassword(Member member, String password, String oldPassword) {
         Optional<Member> opMember = memberRepository.findById(member.getId());
 
-        if (passwordEncoder.matches(oldPassword, opMember.get().getPassword()) == false) {
+        if (!passwordEncoder.matches(oldPassword, opMember.get().getPassword())) {
             return RsData.of("F-1", "기존 비밀번호가 일치하지 않습니다.");
         }
 

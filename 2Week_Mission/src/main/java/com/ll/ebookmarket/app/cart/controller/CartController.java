@@ -55,11 +55,6 @@ public class CartController {
             return rq.historyBack("존재하지 않는 상품입니다.");
         }
 
-        List<Product> products = myBookService.getProductsByMember(memberContext.getMember());
-        if(products.contains(product.get())){
-            return rq.historyBack("이미 구매한 상품입니다.");
-        }
-
         RsData rsData = cartService.addItem(buyer, product.get());
         if(rsData.isFail()){
             return Rq.redirectWithErrorMsg("/product/list", rsData);

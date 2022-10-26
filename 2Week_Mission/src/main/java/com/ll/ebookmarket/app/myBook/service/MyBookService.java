@@ -25,7 +25,7 @@ public class MyBookService {
         products.forEach(product -> saveProduct(member, product));
     }
 
-    private void saveProduct(Member member, Product product) {
+    public void saveProduct(Member member, Product product) {
         MyBook myBook = MyBook.builder()
                 .member(member)
                 .product(product)
@@ -38,7 +38,7 @@ public class MyBookService {
         products.forEach(product -> deleteProduct(member, product));
     }
 
-    private void deleteProduct(Member member, Product product) {
+    public void deleteProduct(Member member, Product product) {
         List<MyBook> myBooks = myBookRepository.findAllByMemberIdAndProductId(member.getId(), product.getId());
         myBookRepository.deleteAll(myBooks);
     }
