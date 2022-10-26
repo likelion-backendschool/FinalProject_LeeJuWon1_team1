@@ -30,7 +30,7 @@ public class Order extends BaseEntity {
     private String name;
 
     private LocalDateTime payDate; // 결제날짜
-    private boolean readyStatus; // 주문완료여부
+    private String readyStatus; // 주문완료여부
     private boolean isPaid; // 결제여부
     private boolean isCanceled; // 취소여부
     private boolean isRefunded; // 환불여부
@@ -61,6 +61,7 @@ public class Order extends BaseEntity {
         }
 
         isPaid = true;
+        readyStatus = "결제완료";
     }
 
     public void setRefundDone() {
@@ -69,6 +70,12 @@ public class Order extends BaseEntity {
         }
 
         isRefunded = true;
+        readyStatus = "환불완료";
+    }
+
+    public void setCancelDone() {
+        isCanceled = true;
+        readyStatus = "취소완료";
     }
 
     public int getPayPrice() {

@@ -27,6 +27,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
+    public Optional<Order> findById(long id) {
+        return orderRepository.findById(id);
+    }
+
+    public List<Order> findAll(Member buyer) {
+        return orderRepository.findAllByBuyer(buyer);
+    }
+
     @Transactional
     public Order createFromCart(Member buyer) {
         List<CartItem> cartItems = cartService.getItemsByBuyer(buyer);
@@ -51,6 +59,8 @@ public class OrderService {
         Order order = Order
                 .builder()
                 .buyer(buyer)
+                .payDate(LocalDateTime.now())
+                .readyStatus("준비")
                 .build();
 
         for (OrderItem orderItem : orderItems) {
@@ -90,14 +100,6 @@ public class OrderService {
 
         order.setRefundDone();
         orderRepository.save(order);
-    }
-
-    public Optional<Order> findForPrintById(long id) {
-        return findById(id);
-    }
-
-    private Optional<Order> findById(long id) {
-        return orderRepository.findById(id);
     }
 
     public boolean actorCanSee(Member actor, Order order) {

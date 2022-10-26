@@ -28,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -39,34 +40,16 @@ public class OrderController {
     private final ObjectMapper objectMapper;
     private final MemberService memberService;
 
-    @PostMapping("/{id}/payByRestCashOnly")
-    @PreAuthorize("isAuthenticated()")
-    public String payByRestCashOnly(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id) {
-        Order order = orderService.findForPrintById(id).get();
-
-        Member actor = memberContext.getMember();
-
-        long restCash = memberService.getRestCash(actor);
-
-        if (orderService.actorCanPayment(actor, order) == false) {
-            throw new ActorCanNotPayOrderException();
-        }
-
-        orderService.payByRestCashOnly(order);
-
-        return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("예치금으로 결제했습니다."));
-    }
-
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public String showDetail(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id, Model model) {
-        Order order = orderService.findForPrintById(id).get();
+        Order order = orderService.findById(id).get();
 
         Member actor = memberContext.getMember();
 
         long restCash = memberService.getRestCash(actor);
 
-        if (orderService.actorCanSee(actor, order) == false) {
+        if (!orderService.actorCanSee(actor, order)) {
             throw new ActorCanNotSeeOrderException();
         }
 
@@ -74,6 +57,17 @@ public class OrderController {
         model.addAttribute("actorRestCash", restCash);
 
         return "order/detail";
+    }
+
+    @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
+    public String showList(@AuthenticationPrincipal MemberContext memberContext, Model model) {
+        Member buyer = memberContext.getMember();
+        List<Order> orders = orderService.findAll(buyer);
+
+        model.addAttribute("orders", orders);
+
+        return "order/list";
     }
 
     @PostConstruct
@@ -90,6 +84,24 @@ public class OrderController {
         });
     }
 
+    @PostMapping("/{id}/payByRestCashOnly")
+    @PreAuthorize("isAuthenticated()")
+    public String payByRestCashOnly(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id) {
+        Order order = orderService.findById(id).get();
+
+        Member actor = memberContext.getMember();
+
+        long restCash = memberService.getRestCash(actor);
+
+        if (!orderService.actorCanPayment(actor, order)) {
+            throw new ActorCanNotPayOrderException();
+        }
+
+        orderService.payByRestCashOnly(order);
+
+        return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("예치금으로 결제했습니다."));
+    }
+
     @RequestMapping("/{id}/success")
     public String confirmPayment(
             @PathVariable long id,
@@ -100,7 +112,7 @@ public class OrderController {
             @AuthenticationPrincipal MemberContext memberContext
     ) throws Exception {
 
-        Order order = orderService.findForPrintById(id).get();
+        Order order = orderService.findById(id).get();
 
         long orderIdInputed = Long.parseLong(orderId.split("__")[1]);
 

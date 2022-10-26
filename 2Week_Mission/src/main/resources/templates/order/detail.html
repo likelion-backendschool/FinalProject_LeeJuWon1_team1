@@ -32,7 +32,11 @@
                 </div>
 
                 <div>
-                    주문날짜 : [[${order.createDate}]]
+                    주문상태 : [[${order.readyStatus}]]
+                </div>
+
+                <div>
+                    주문날짜 : [[${#temporals.format(order.createDate, 'yyyy-MM-dd HH:mm')}]]
                 </div>
 
                 <div>
@@ -72,7 +76,11 @@
                         </label>
                     </div>
                     <button th:if="${order.payable}" onclick="payment();" class="btn btn-sm btn-primary">카드결제</button>
+                    <button th:if="${order.payable}" onclick="payCancel();" class="btn btn-sm btn-primary">주문취소</button>
+                    <button th:if="${order.isPaid}" onclick="payRefund();" class="btn btn-sm btn-primary">환불요청</button>
                     <span th:if="${order.isPaid}">결제완료</span>
+                    <span th:if="${order.isCanceled}">취소완료</span>
+                    <span th:if="${order.isRefunded}">환불완료</span>
                     <div>
                         <span>PG결제가격 : </span>
                         <span id="PaymentForm__pgPayPriceDisplay">
@@ -111,6 +119,10 @@
             };
 
             tossPayments.requestPayment(method, paymentData);
+        }
+
+        function payCancel() {
+
         }
     </script>
 
