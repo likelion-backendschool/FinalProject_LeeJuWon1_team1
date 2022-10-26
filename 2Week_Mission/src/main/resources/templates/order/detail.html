@@ -13,7 +13,7 @@
         const orderId = /*[[ ${order.id} ]]*/ null;
         const buyerName = /*[[ ${order.buyer.name} ]]*/ null;
         const orderName = /*[[ ${order.name} ]]*/ null;
-        const orderPayPrice = /*[[ ${order.calculatePayPrice} ]]*/ null;
+        const orderPayPrice = /*[[ ${order.calculatePayPrice()} ]]*/ null;
     </script>
 
     <form hidden name="payByRestCashOnlyForm" method="POST" th:action="@{|/order/${order.id}/payByRestCashOnly|}">
@@ -76,11 +76,10 @@
                         </label>
                     </div>
                     <button th:if="${order.payable}" onclick="payment();" class="btn btn-sm btn-primary">카드결제</button>
+
                     <button th:if="${order.payable}" onclick="payCancel();" class="btn btn-sm btn-primary">주문취소</button>
-                    <button th:if="${order.isPaid}" onclick="payRefund();" class="btn btn-sm btn-primary">환불요청</button>
-                    <span th:if="${order.isPaid}">결제완료</span>
-                    <span th:if="${order.isCanceled}">취소완료</span>
-                    <span th:if="${order.isRefunded}">환불완료</span>
+                    <form method="POST" name="payCancelForm" th:action="@{|/order/${order.id}/cancel|}" hidden></form>
+
                     <div>
                         <span>PG결제가격 : </span>
                         <span id="PaymentForm__pgPayPriceDisplay">
@@ -88,6 +87,9 @@
                         </span>
                     </div>
                 </div>
+
+                <button th:if="${order.isPaid && !order.isRefunded}" onclick="payRefund();" class="btn btn-sm btn-primary">환불요청</button>
+                <form method="POST" name="payRefundForm" th:action="@{|/order/${order.id}/refund|}" hidden></form>
             </div>
         </div>
     </section>
@@ -100,9 +102,13 @@
         const tossPayments = TossPayments("test_ck_GKNbdOvk5rkxQOdggeq8n07xlzmj");
 
         function payment() {
+            if($PaymentForm__useRestCash.val() === ""){
+                alert("사용할 예치금을 입력해주세요.");
+            }
+
             let useRestCash = parseInt($PaymentForm__useRestCash.val());
 
-            if (orderPayPrice == useRestCash) {
+            if (orderPayPrice === useRestCash) {
                 document.payByRestCashOnlyForm.submit();
                 return;
             }
@@ -118,11 +124,17 @@
                 failUrl: window.location.origin + "/order/" + orderId + "/fail"
             };
 
+            console.log(paymentData);
+
             tossPayments.requestPayment(method, paymentData);
         }
 
         function payCancel() {
+            document.payCancelForm.submit();
+        }
 
+        function payRefund() {
+            document.payRefundForm.submit();
         }
     </script>
 

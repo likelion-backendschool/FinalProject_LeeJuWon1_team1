@@ -94,6 +94,12 @@ public class OrderService {
     }
 
     @Transactional
+    public void cancel(Order order) {
+        order.setCancelDone();
+        orderRepository.save(order);
+    }
+
+    @Transactional
     public void refund(Order order) {
         int payPrice = order.getPayPrice();
         memberService.addCash(order.getBuyer(), payPrice, "주문__%d__환불__예치금".formatted(order.getId()));

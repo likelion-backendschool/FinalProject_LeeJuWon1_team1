@@ -3,6 +3,7 @@ package com.ll.ebookmarket.app.order.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.ebookmarket.app.AppConfig;
+import com.ll.ebookmarket.app.base.rq.Rq;
 import com.ll.ebookmarket.app.member.entity.Member;
 import com.ll.ebookmarket.app.member.service.MemberService;
 import com.ll.ebookmarket.app.order.entity.Order;
@@ -26,10 +27,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,6 +37,7 @@ public class OrderController {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
     private final MemberService memberService;
+    private final Rq rq;
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
@@ -68,6 +67,40 @@ public class OrderController {
         model.addAttribute("orders", orders);
 
         return "order/list";
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("isAuthenticated()")
+    public String create(@AuthenticationPrincipal MemberContext memberContext) {
+        Member member = memberContext.getMember();
+        Order order = orderService.createFromCart(member);
+
+        return "redirect:/order/%d".formatted(order.getId()) + "?msg=" + Ut.url.encode("%d번 주문이 생성되었습니다.".formatted(order.getId()));
+    }
+
+    @PostMapping("/{id}/cancel")
+    @PreAuthorize("isAuthenticated()")
+    public String cancel(@AuthenticationPrincipal MemberContext memberContext, @PathVariable Long id) {
+        Member member = memberContext.getMember();
+        Optional<Order> order = orderService.findById(id);
+        if(order.isEmpty()){
+            return rq.historyBack("존재하지 않는 주문입니다.");
+        }
+        orderService.cancel(order.get());
+
+        return "redirect:/order/%d".formatted(id) + "?msg=" + Ut.url.encode("%d번 주문이 취소되었습니다.".formatted(id));
+    }
+
+    @PostMapping("/{id}/refund")
+    @PreAuthorize("isAuthenticated()")
+    public String refund(@AuthenticationPrincipal MemberContext memberContext, @PathVariable Long id) {
+        Member member = memberContext.getMember();
+        Optional<Order> order = orderService.findById(id);
+        if(order.isEmpty()){
+            return rq.historyBack("존재하지 않는 주문입니다.");
+        }
+        orderService.refund(order.get());
+        return "redirect:/order/%d".formatted(id) + "?msg=" + Ut.url.encode("%d번 주문이 취소되었습니다.".formatted(id));
     }
 
     @PostConstruct
@@ -160,14 +193,5 @@ public class OrderController {
         model.addAttribute("message", message);
         model.addAttribute("code", code);
         return "order/fail";
-    }
-
-    @PostMapping("/create")
-    @PreAuthorize("isAuthenticated()")
-    public String create(@AuthenticationPrincipal MemberContext memberContext) {
-        Member member = memberContext.getMember();
-        Order order = orderService.createFromCart(member);
-
-        return "redirect:/order/%d".formatted(order.getId()) + "?msg=" + Ut.url.encode("%d번 주문이 생성되었습니다.".formatted(order.getId()));
     }
 }
