@@ -80,7 +80,7 @@ public class PostController {
 
         Member actor = rq.getMember();
 
-        if (postService.actorCanModify(actor, post) == false) {
+        if (!postService.actorCanSee(actor, post)) {
             throw new ActorCanNotModifyException();
         }
 
