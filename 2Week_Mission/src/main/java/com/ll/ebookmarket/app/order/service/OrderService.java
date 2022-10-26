@@ -4,6 +4,7 @@ import com.ll.ebookmarket.app.cart.entity.CartItem;
 import com.ll.ebookmarket.app.cart.service.CartService;
 import com.ll.ebookmarket.app.member.entity.Member;
 import com.ll.ebookmarket.app.member.service.MemberService;
+import com.ll.ebookmarket.app.myBook.service.MyBookService;
 import com.ll.ebookmarket.app.order.entity.Order;
 import com.ll.ebookmarket.app.order.entity.OrderItem;
 import com.ll.ebookmarket.app.order.repository.OrderItemRepository;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class OrderService {
     private final MemberService memberService;
     private final CartService cartService;
+    private final MyBookService myBookService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
@@ -59,7 +61,6 @@ public class OrderService {
         Order order = Order
                 .builder()
                 .buyer(buyer)
-                .payDate(LocalDateTime.now())
                 .readyStatus("준비")
                 .build();
 
@@ -73,6 +74,28 @@ public class OrderService {
         orderRepository.save(order);
 
         return order;
+    }
+
+    @Transactional
+    public void cancel(Order order) {
+        order.setCancelDone();
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void refund(Order order) {
+        int payPrice = order.getPayPrice();
+        memberService.addCash(order.getBuyer(), payPrice, "주문__%d__환불__예치금".formatted(order.getId()));
+
+        order.setRefundDone();
+        List<Product> products = order.getOrderItems().stream().map(OrderItem::getProduct).toList();
+        myBookService.deleteProducts(order.getBuyer(), products);
+
+        orderRepository.save(order);
+    }
+
+    public boolean actorCanSee(Member actor, Order order) {
+        return actor.getId().equals(order.getBuyer().getId());
     }
 
     @Transactional
@@ -90,26 +113,11 @@ public class OrderService {
         memberService.addCash(buyer, payPrice * -1, "주문__%d__사용__예치금".formatted(order.getId()));
 
         order.setPaymentDone();
+
+        List<Product> products = order.getOrderItems().stream().map(OrderItem::getProduct).toList();
+        myBookService.saveProducts(buyer, products);
+
         orderRepository.save(order);
-    }
-
-    @Transactional
-    public void cancel(Order order) {
-        order.setCancelDone();
-        orderRepository.save(order);
-    }
-
-    @Transactional
-    public void refund(Order order) {
-        int payPrice = order.getPayPrice();
-        memberService.addCash(order.getBuyer(), payPrice, "주문__%d__환불__예치금".formatted(order.getId()));
-
-        order.setRefundDone();
-        orderRepository.save(order);
-    }
-
-    public boolean actorCanSee(Member actor, Order order) {
-        return actor.getId().equals(order.getBuyer().getId());
     }
 
     @Transactional
@@ -126,6 +134,10 @@ public class OrderService {
         }
 
         order.setPaymentDone();
+
+        List<Product> products = order.getOrderItems().stream().map(OrderItem::getProduct).toList();
+        myBookService.saveProducts(buyer, products);
+
         orderRepository.save(order);
     }
 

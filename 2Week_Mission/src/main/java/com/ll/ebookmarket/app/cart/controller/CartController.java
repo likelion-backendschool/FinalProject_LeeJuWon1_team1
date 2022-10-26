@@ -5,6 +5,7 @@ import com.ll.ebookmarket.app.base.rq.Rq;
 import com.ll.ebookmarket.app.cart.entity.CartItem;
 import com.ll.ebookmarket.app.cart.service.CartService;
 import com.ll.ebookmarket.app.member.entity.Member;
+import com.ll.ebookmarket.app.myBook.service.MyBookService;
 import com.ll.ebookmarket.app.product.entity.Product;
 import com.ll.ebookmarket.app.product.service.ProductService;
 import com.ll.ebookmarket.app.security.dto.MemberContext;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class CartController {
     private final CartService cartService;
     private final ProductService productService;
+    private final MyBookService myBookService;
     private final Rq rq;
 
     @GetMapping("/list")
@@ -51,6 +53,11 @@ public class CartController {
         Optional<Product> product = productService.findById(id);
         if(product.isEmpty()){
             return rq.historyBack("존재하지 않는 상품입니다.");
+        }
+
+        List<Product> products = myBookService.getProductsByMember(memberContext.getMember());
+        if(products.contains(product.get())){
+            return rq.historyBack("이미 구매한 상품입니다.");
         }
 
         RsData rsData = cartService.addItem(buyer, product.get());

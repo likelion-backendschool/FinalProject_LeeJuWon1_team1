@@ -62,6 +62,7 @@ public class Order extends BaseEntity {
             orderItem.setPaymentDone();
         }
 
+        payDate = LocalDateTime.now();
         isPaid = true;
         readyStatus = "결제완료";
     }
