@@ -2,6 +2,7 @@ package com.ll.ebook.app.base.initData;
 
 import com.ll.ebook.app.cart.service.CartService;
 import com.ll.ebook.app.member.entity.Member;
+import com.ll.ebook.app.member.entity.emum.AuthLevel;
 import com.ll.ebook.app.member.service.MemberService;
 import com.ll.ebook.app.order.entity.Order;
 import com.ll.ebook.app.order.repository.OrderRepository;
@@ -40,6 +41,7 @@ public class NotProdInitData {
             initDataDone = true;
 
             Member member1 = memberService.join("user1", "1234", "user1@test.com", null);
+            member1.setAuthLevel(AuthLevel.ADMIN);
             Member member2 = memberService.join("user2", "1234", "user2@test.com", "홍길순");
 
             postService.write(

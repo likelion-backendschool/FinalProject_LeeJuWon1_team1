@@ -61,7 +61,7 @@ public class Member extends BaseEntity {
             authorities.add(new SimpleGrantedAuthority("AUTHOR"));
         }
 
-        if(username.equals("admin")) {
+        if(authLevel.getValue().equals("ADMIN")) {
             authorities.add(new SimpleGrantedAuthority("ADMIN"));
         }
 
