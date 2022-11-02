@@ -17,7 +17,7 @@ public class MakeRebateBatchScheduler {
     private final JobLauncher jobLauncher;
     private final MakeRebateOrderItemJobConfig makeRebateOrderItemJobConfig;
 
-    @Scheduled(cron = "0 0 4 14 * ?") // 매달 15일 새벽 4시
+    @Scheduled(cron = "0 0 4 15 * ?") // 매달 15일 새벽 4시
 //    @Scheduled(cron = "0 0/1 * * * ?") // 1분 마다 실행(테스트용)
     public void runJob() throws Exception {
         Map<String, JobParameter> confMap = new HashMap<>();
