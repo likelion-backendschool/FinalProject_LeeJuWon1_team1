@@ -31,7 +31,7 @@
 **[특이사항]**
 - 스프링 배치를 테스트 해보려고 Active profile에 값을 넣고 실행하니 자꾸 일부 환경변수 관련해서 오류가 났다. 처음에 원인을 몰라서 한참을 헤매다가 실행시 Active profiles에 값을 넣으면 application.yml의 active가 적용되지 않아 application-dev.yml의 환경 변수들이 포함되지 않는 것을 깨닫고 해결하였다.
 
-- 배치 job의 makeRebateOrderItemJob이 initData 의존성 주입을 받아 실행하도록 되어 있는 코드가 있었는데 bean으로 등록된 initData가 주입이 되질 않아서 한참을 헤맸다. 생각해보니 Job을 굳이 실행 시에 실행할 필요가 없어서 batch.job.enabled 를 false 로 놓아 일단 해결하였다. 하지만 근본적인 원인은 찾지 못했다.
+- 배치 job의 makeRebateOrderItemJob이 initData 의존성 주입을 받아 실행하도록 되어 있는 코드가 있었는데 bean으로 등록된 initData가 주입이 되질 않아서 한참을 헤맸다. 생각해보니 Job을 굳이 실행 시에 실행할 필요가 없어서 batch.job.enabled 를 false 로 놓고 의존성을 제거하여 일단 해결하였다. 하지만 근본적인 원인은 찾지 못했다.
 
 - 스케줄링을 위해 해당 코드를 작성하였는데 원래 강사님 코드에서는 파라미터로 Step을 받도록 되어 있었으나 여러 파라미터가 계속 얽혀 있어서 그냥 파라미터를 받지 않도록 코드를 수정하였다. 전자의 방식을 활용하도록 코드를 개선해보고 싶었으나 생각이 나지 않아 보류하였다.
   ```java
