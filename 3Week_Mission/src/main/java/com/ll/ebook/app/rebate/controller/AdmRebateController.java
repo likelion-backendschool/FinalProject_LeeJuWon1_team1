@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/adm/rebate")
@@ -25,7 +29,15 @@ public class AdmRebateController {
 
     @GetMapping("/makeData")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String showMakeData() {
+    public String showMakeData(Model model) {
+        List<String> months = IntStream.rangeClosed(0, 5)
+                        .boxed()
+                        .map(i -> LocalDateTime.now()
+                                .minusMonths(i)
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM")))
+                        .toList();
+
+        model.addAttribute("months", months);
         return "adm/rebate/makeData";
     }
 
@@ -43,7 +55,7 @@ public class AdmRebateController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String showRebateOrderItemList(String yearMonth, Model model) {
         if (yearMonth == null) {
-            yearMonth = "2022-10";
+            yearMonth = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         }
 
         List<RebateOrderItem> items = rebateService.findRebateOrderItemsByPayDateIn(yearMonth);
