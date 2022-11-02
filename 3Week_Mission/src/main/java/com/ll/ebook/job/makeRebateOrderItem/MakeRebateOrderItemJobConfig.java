@@ -6,6 +6,7 @@ import com.ll.ebook.app.rebate.entity.RebateOrderItem;
 import com.ll.ebook.app.rebate.repository.RebateOrderItemRepository;
 import com.ll.ebook.util.Ut;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,8 +38,10 @@ public class MakeRebateOrderItemJobConfig {
     private final OrderItemRepository orderItemRepository;
     private final RebateOrderItemRepository rebateOrderItemRepository;
 
+    private final CommandLineRunner initData;
+
     @Bean
-    public Job makeRebateOrderItemJob(Step makeRebateOrderItemStep1, CommandLineRunner initData) throws Exception {
+    public Job makeRebateOrderItemJob(Step makeRebateOrderItemStep1) throws Exception {
         initData.run();
 
         return jobBuilderFactory.get("makeRebateOrderItemJob")
