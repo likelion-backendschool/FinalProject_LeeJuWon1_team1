@@ -6,7 +6,6 @@ import com.ll.ebook.app.rebate.entity.RebateOrderItem;
 import com.ll.ebook.app.rebate.repository.RebateOrderItemRepository;
 import com.ll.ebook.util.Ut;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -14,17 +13,13 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,38 +33,31 @@ public class MakeRebateOrderItemJobConfig {
     private final OrderItemRepository orderItemRepository;
     private final RebateOrderItemRepository rebateOrderItemRepository;
 
-    private final CommandLineRunner initData;
-
     @Bean
-    public Job makeRebateOrderItemJob(Step makeRebateOrderItemStep1) throws Exception {
-        initData.run();
+    public Job makeRebateOrderItemJob() throws Exception {
 
         return jobBuilderFactory.get("makeRebateOrderItemJob")
-                .start(makeRebateOrderItemStep1)
+                .start(makeRebateOrderItemStep())
                 .build();
     }
 
     @Bean
     @JobScope
-    public Step makeRebateOrderItemStep1(
-            ItemReader orderItemReader,
-            ItemProcessor orderItemToRebateOrderItemProcessor,
-            ItemWriter rebateOrderItemWriter
-    ) {
+    public Step makeRebateOrderItemStep() {
         return stepBuilderFactory.get("makeRebateOrderItemStep1")
                 .<OrderItem, RebateOrderItem>chunk(100)
-                .reader(orderItemReader)
-                .processor(orderItemToRebateOrderItemProcessor)
-                .writer(rebateOrderItemWriter)
+                .reader(orderItemReader())
+                .processor(orderItemToRebateOrderItemProcessor())
+                .writer(rebateOrderItemWriter())
                 .build();
     }
 
     @StepScope
     @Bean
-    public RepositoryItemReader<OrderItem> orderItemReader(
-            @Value("#{jobParameters['month']}") String yearMonth
-    ) {
+    public RepositoryItemReader<OrderItem> orderItemReader() {
+        String yearMonth = Ut.date.getYearMonth();
         int monthEndDay = Ut.date.getEndDayOf(yearMonth);
+
         LocalDateTime fromDate = Ut.date.parse(yearMonth + "-01 00:00:00.000000");
         LocalDateTime toDate = Ut.date.parse(yearMonth + "-%02d 23:59:59.999999".formatted(monthEndDay));
 

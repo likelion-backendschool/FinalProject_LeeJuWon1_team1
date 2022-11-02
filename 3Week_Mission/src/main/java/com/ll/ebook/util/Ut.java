@@ -34,6 +34,10 @@ public class Ut {
             return getEndDayOf(yearMonth);
         }
 
+        public static String getYearMonth() {
+            return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        }
+
         public static int getEndDayOf(String yearMonth) {
             LocalDate convertedDate = LocalDate.parse(yearMonth + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             convertedDate = convertedDate.withDayOfMonth(

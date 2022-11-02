@@ -6,20 +6,24 @@ spring:
   batch:
     job:
       names: ${job.name:NONE}
+      enabled: false
     jdbc:
-      initialize-schema: ALWAYS
+      initialize-schema: never
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://127.0.0.1:3306/week3__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: root
     password:
   jpa:
+    hibernate:
+      ddl-auto: create
     properties:
       hibernate:
         default_batch_fetch_size: 100
         show_sql: true
         format_sql: true
         use_sql_comments: true
+        ddl-auto: create
   mail:
     host: smtp.gmail.com
     port: 587
