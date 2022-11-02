@@ -3,6 +3,11 @@ spring:
     active: dev
     include:
       - base-addi
+  batch:
+    job:
+      names: ${job.name:NONE}
+    jdbc:
+      initialize-schema: ALWAYS
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
