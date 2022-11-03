@@ -60,8 +60,8 @@ public class MakeRebateOrderItemJobConfig {
     @StepScope
     @Bean
     public RepositoryItemReader<OrderItem> orderItemReader() {
-        String yearMonth = Ut.date.getYearMonth(); // 테스트용
-//        String yearMonth = Ut.date.getPrevYearMonth();
+//        String yearMonth = Ut.date.getYearMonth(); // 테스트용
+        String yearMonth = Ut.date.getPrevYearMonth();
         int monthEndDay = Ut.date.getEndDayOf(yearMonth);
 
         LocalDateTime fromDate = Ut.date.parse(yearMonth + "-01 00:00:00.000000");
