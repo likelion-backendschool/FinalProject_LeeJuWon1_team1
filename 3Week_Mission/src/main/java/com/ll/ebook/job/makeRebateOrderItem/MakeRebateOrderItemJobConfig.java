@@ -13,6 +13,7 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
@@ -34,28 +35,33 @@ public class MakeRebateOrderItemJobConfig {
     private final RebateOrderItemRepository rebateOrderItemRepository;
 
     @Bean
-    public Job makeRebateOrderItemJob() throws Exception {
+    public Job makeRebateOrderItemJob(Step makeRebateOrderItemStep) throws Exception {
 
         return jobBuilderFactory.get("makeRebateOrderItemJob")
-                .start(makeRebateOrderItemStep())
+                .start(makeRebateOrderItemStep)
                 .build();
     }
 
     @Bean
     @JobScope
-    public Step makeRebateOrderItemStep() {
+    public Step makeRebateOrderItemStep(
+            ItemReader orderItemReader,
+            ItemProcessor orderItemToRebateOrderItemProcessor,
+            ItemWriter rebateOrderItemWriter
+    ) {
         return stepBuilderFactory.get("makeRebateOrderItemStep1")
                 .<OrderItem, RebateOrderItem>chunk(100)
-                .reader(orderItemReader())
-                .processor(orderItemToRebateOrderItemProcessor())
-                .writer(rebateOrderItemWriter())
+                .reader(orderItemReader)
+                .processor(orderItemToRebateOrderItemProcessor)
+                .writer(rebateOrderItemWriter)
                 .build();
     }
 
     @StepScope
     @Bean
     public RepositoryItemReader<OrderItem> orderItemReader() {
-        String yearMonth = Ut.date.getPrevYearMonth();
+        String yearMonth = Ut.date.getYearMonth(); // 테스트용
+//        String yearMonth = Ut.date.getPrevYearMonth();
         int monthEndDay = Ut.date.getEndDayOf(yearMonth);
 
         LocalDateTime fromDate = Ut.date.parse(yearMonth + "-01 00:00:00.000000");
