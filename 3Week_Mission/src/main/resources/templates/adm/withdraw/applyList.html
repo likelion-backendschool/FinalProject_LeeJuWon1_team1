@@ -34,8 +34,8 @@
                         <td th:text="${withdraw.applicant.name}"></td>
                         <td>
                             <a th:if="${withdraw.applicable}" href="javascript:;" onclick="$(this).next().submit();"
-                               class="btn btn-primary btn-xs">건별정산</a>
-                            <span th:if="${!withdraw.applicable}">정산완료</span>
+                               class="btn btn-primary btn-xs">출금처리</a>
+                            <span th:if="${!withdraw.applicable}">출금완료</span>
                             <form method="POST" th:action="@{|/adm/withdraw/${withdraw.id}|}"
                                   hidden></form>
                         </td>
