@@ -36,7 +36,6 @@ public class ApiV1MemberController {
     @PostMapping("/login")
     @Operation(summary = "로그인, 액세스 토큰 발급")
     public ResponseEntity<RsData<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
-        System.out.println("username" + loginRequest.getUsername());
         Member member = memberService.findByUsername(loginRequest.getUsername()).orElse(null);
 
         if (member == null) {
