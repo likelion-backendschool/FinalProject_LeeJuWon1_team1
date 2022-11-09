@@ -1,9 +1,12 @@
 package com.ll.ebook.app.myBook.dto;
 
-import com.ll.ebook.app.myBook.entity.MyBook;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
+@AllArgsConstructor
 public class MyBooksResponse {
-    MyBookDto myBook;
+    List<MyBookDto> myBooks;
 }
