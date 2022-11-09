@@ -17,7 +17,7 @@ public class MyBookDto {
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
     private Long ownerId;
-    private ProductDto productDto;
+    private ProductDto product;
 
     public static MyBookDto of(MyBook myBook) {
         return new MyBookDto(
