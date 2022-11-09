@@ -87,16 +87,8 @@ public class Member extends BaseEntity {
             id = (long) (int) jwtClaims.get("id");
         }
 
-        LocalDateTime createDate = null;
-        LocalDateTime modifyDate = null;
-
-        if (jwtClaims.get("createDate") instanceof List) {
-            createDate = Ut.date.bitsToLocalDateTime((List<Integer>) jwtClaims.get("createDate"));
-        }
-
-        if (jwtClaims.get("modifyDate") instanceof List) {
-            modifyDate = Ut.date.bitsToLocalDateTime((List<Integer>) jwtClaims.get("modifyDate"));
-        }
+        LocalDateTime createDate = (LocalDateTime) jwtClaims.get("createDate");
+        LocalDateTime modifyDate = (LocalDateTime) jwtClaims.get("modifyDate");
 
         String username = (String) jwtClaims.get("username");
         String email = (String) jwtClaims.get("email");
