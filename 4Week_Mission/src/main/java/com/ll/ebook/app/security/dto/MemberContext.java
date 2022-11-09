@@ -18,6 +18,16 @@ public class MemberContext extends User {
     private final String email;
     private final String nickname;
 
+    public MemberContext(Member member) {
+        super(member.getUsername(), member.getPassword(), member.getAuthorities());
+        this.id = member.getId();
+        this.createDate = member.getCreateDate();
+        this.modifyDate = member.getModifyDate();
+        this.username = member.getUsername();
+        this.email = member.getEmail();
+        this.nickname = member.getNickname();
+    }
+
     public MemberContext(Member member, List<GrantedAuthority> authorities) {
         super(member.getUsername(), member.getPassword(), authorities);
         this.id = member.getId();
@@ -27,6 +37,8 @@ public class MemberContext extends User {
         this.email = member.getEmail();
         this.nickname = member.getNickname();
     }
+
+
 
     public Member getMember() {
         return Member

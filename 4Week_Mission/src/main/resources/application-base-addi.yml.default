@@ -5,3 +5,5 @@ custom:
   tossPayments:
     clientKey: NEED_TO_INPUT
     secretKey: NEED_TO_INPUT
+  jwt:
+    secretKey: NEET_TO_INPUT_SECRETKEY
