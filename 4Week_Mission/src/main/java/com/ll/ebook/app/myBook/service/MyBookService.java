@@ -1,5 +1,6 @@
 package com.ll.ebook.app.myBook.service;
 
+import com.ll.ebook.app.member.entity.Member;
 import com.ll.ebook.app.myBook.entity.MyBook;
 import com.ll.ebook.app.base.dto.RsData;
 import com.ll.ebook.app.myBook.repository.MyBookRepository;
@@ -8,11 +9,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MyBookService {
     private final MyBookRepository myBookRepository;
+
+    public List<MyBook> getMyBooksByMember(Member member) {
+        return myBookRepository.findAllByOwnerId(member.getId());
+    }
+
+    public Optional<MyBook> getMyBookById(Long myBookId) {
+        return myBookRepository.findById(myBookId);
+    }
 
     @Transactional
     public RsData add(Order order) {

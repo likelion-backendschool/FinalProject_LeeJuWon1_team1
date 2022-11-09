@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -56,6 +57,10 @@ public class Ut {
 
         public static LocalDateTime parse(String dateText) {
             return parse("yyyy-MM-dd HH:mm:ss.SSSSSS", dateText);
+        }
+
+        public static LocalDateTime bitsToLocalDateTime(List<Integer> bits) {
+            return LocalDateTime.of(bits.get(0), bits.get(1), bits.get(2), bits.get(3), bits.get(4), bits.get(5), bits.get(6));
         }
     }
 
@@ -100,6 +105,15 @@ public class Ut {
                 return null;
             }
         }
+
+        public static Object toStr(RsData rs) {
+            try {
+                return getObjectMapper().writeValueAsString(rs);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     public static <K, V> Map<K, V> mapOf(Object... args) {
@@ -122,11 +136,11 @@ public class Ut {
 
     public static class spring {
 
-        public static <T> ResponseEntity<RsData> responseEntityOf(RsData<T> rsData) {
+        public static <T> ResponseEntity<RsData<T>> responseEntityOf(RsData<T> rsData) {
             return responseEntityOf(rsData, null);
         }
 
-        public static <T> ResponseEntity<RsData> responseEntityOf(RsData<T> rsData, HttpHeaders headers) {
+        public static <T> ResponseEntity<RsData<T>> responseEntityOf(RsData<T> rsData, HttpHeaders headers) {
             return new ResponseEntity<>(rsData, headers, rsData.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
         }
 
