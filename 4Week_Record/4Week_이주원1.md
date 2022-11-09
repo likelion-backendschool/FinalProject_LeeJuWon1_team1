@@ -4,22 +4,30 @@
 
 ### 필수과제
 
-- [ ] JWT 로그인 구현(POST /api/v1/member/login)
-- [ ] 내 도서 리스트 구현(GET /api/v1/myBooks)
-- [ ] 내 도서 상세정보 구현(GET /api/v1/myBooks/{id})
-- [ ] 로그인 한 회원의 정보 구현(GET /api/v1/member/me)
-- [ ] Spring Doc 으로 API 문서화(크롬 /swagger-ui/index.html )
+- [X] JWT 로그인 구현(POST /api/v1/member/login)
+- [X] 내 도서 리스트 구현(GET /api/v1/myBooks)
+- [X] 내 도서 상세정보 구현(GET /api/v1/myBooks/{id})
+- [X] 로그인 한 회원의 정보 구현(GET /api/v1/member/me)
+- [X] Spring Doc 으로 API 문서화(크롬 /swagger-ui/index.html )
 
 ### 추가과제
 
-- [ ] 엑세스 토큰 화이트리스트 구현(Member 엔티티에 accessToken 필드 추가)
-- [ ] 리액트에서 작동되도록
-  - [ ] 아래 API 명세에 맞게 구현하시면 강사가 제공해 드린 리액트 코드가 작동합니다.
+- [X] 엑세스 토큰 화이트리스트 구현(Member 엔티티에 accessToken 필드 추가)
+- [X] 리액트에서 작동되도록
+  - [X] 아래 API 명세에 맞게 구현하시면 강사가 제공해 드린 리액트 코드가 작동합니다.
 
 ---
 
 ## 4주차 미션 요약
 
 **[접근 방법]**
+- 기존에 진행했던 강좌들 중에서 Spring Doc, Rest API, JWT 관련 영상들을 찾아서 보았고 강사님 코드를 다운 받아서 이번 과제에 필요한 코드가 어떤 식으로 작동하는지 분석하였다.
+
+- 코드를 분석하고 필요할 코드를 가져와서 조합했고 에러를 해결하는 식으로 완성해나갔다.
+
+- 강사님이 올린 4주차 설명영상의 내용을 보고 Dto들을 만들어 Dto 설계를 빨리 할 수 있었다.
 
 **[특이사항]**
+- 솔직히 모든 코드의 동작 원리를 제대로 이해하고 있지 않았다. 특히 Security 설정 관련 코드들은 그냥 그런갑다 하고 넘어가고 제대로 이해하고 쓴게 아니라서 이쪽 관련 코드들을 건드리기가 매우 힘들었고 오류가 나면 이것 저것 같다 붙여 넣으면서 일단 돌아가게끔만 구현하였다. 이전에도 batch 관련해서 제대로 이해하고 있지 않아서 jobParameter를 활용하지 않아 쓸데 없는 코드들을 작성한 경우가 있었는데 이번에도 Security 보충 공부를 하게 된다면 쓸데 없이 작성한 코드들을 리팩토링 해야 하는 과정이 필요할 것 같다.
+
+- ProductDetailDto와 ProductDto는 myBookController에서만 쓰이는 Dto 들인데 myBook 패키지에 넣어야할지 product패키지에 넣을지 고민되었다. 패키지는 그래도 해당 도메인에 대한 내용이라면 당연히 product 패키지에 들어가는게 맞지 않을까 싶어 일단 넣어두었지만 Dto 라는 클래스의 성격상 뭔가 해당 controller 와 같이 넣는게 맞지 않을까라는 생각도 들었다.
