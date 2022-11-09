@@ -136,11 +136,11 @@ public class Ut {
 
     public static class spring {
 
-        public static <T> ResponseEntity<RsData> responseEntityOf(RsData<T> rsData) {
+        public static <T> ResponseEntity<RsData<T>> responseEntityOf(RsData<T> rsData) {
             return responseEntityOf(rsData, null);
         }
 
-        public static <T> ResponseEntity<RsData> responseEntityOf(RsData<T> rsData, HttpHeaders headers) {
+        public static <T> ResponseEntity<RsData<T>> responseEntityOf(RsData<T> rsData, HttpHeaders headers) {
             return new ResponseEntity<>(rsData, headers, rsData.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
         }
 

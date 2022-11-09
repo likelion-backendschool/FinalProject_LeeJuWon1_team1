@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RsData> errorHandler(MethodArgumentNotValidException exception) {
+    public ResponseEntity<RsData<String>> errorHandler(MethodArgumentNotValidException exception) {
         String msg = exception
                 .getBindingResult()
                 .getAllErrors()
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<RsData> errorHandler(RuntimeException exception) {
+    public ResponseEntity<RsData<String>> errorHandler(RuntimeException exception) {
         String msg = exception.getClass().toString();
 
         String data = exception.getMessage();

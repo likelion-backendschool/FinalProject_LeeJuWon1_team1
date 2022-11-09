@@ -50,13 +50,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void forceAuthentication(Member member) {
-        MemberContext memberContext = new MemberContext(member);
+        MemberContext memberContext = new MemberContext(member, member.genAuthorities());
 
         UsernamePasswordAuthenticationToken authentication =
                 UsernamePasswordAuthenticationToken.authenticated(
                         memberContext,
                         null,
-                        member.getAuthorities()
+                        member.genAuthorities()
                 );
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();

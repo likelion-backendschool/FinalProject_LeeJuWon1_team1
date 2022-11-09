@@ -100,6 +100,9 @@ public class Member extends BaseEntity {
 
         String username = (String) jwtClaims.get("username");
         String email = (String) jwtClaims.get("email");
+        boolean emailVerified = (boolean) jwtClaims.get("emailVerified");
+        String nickname = (String) jwtClaims.get("nickname");
+        AuthLevel authLevel = (AuthLevel) jwtClaims.get("authLevel");
         String accessToken = (String) jwtClaims.get("accessToken");
 
         return Member
@@ -109,16 +112,11 @@ public class Member extends BaseEntity {
                 .modifyDate(modifyDate)
                 .username(username)
                 .email(email)
+                .emailVerified(emailVerified)
+                .nickname(nickname)
+                .authLevel(authLevel)
                 .accessToken(accessToken)
                 .build();
-    }
-
-    // 현재 회원이 가지고 있는 권한들을 List<GrantedAuthority> 형태로 리턴
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("MEMBER"));
-
-        return authorities;
     }
 
     public Map<String, Object> getAccessTokenClaims() {
@@ -128,7 +126,10 @@ public class Member extends BaseEntity {
                 "modifyDate", getModifyDate(),
                 "username", getUsername(),
                 "email", getEmail(),
-                "authorities", getAuthorities()
+                "emailVerified", isEmailVerified(),
+                "nickname", getNickname(),
+                "authLevel", getAuthLevel(),
+                "authorities", genAuthorities()
         );
     }
 
@@ -139,8 +140,11 @@ public class Member extends BaseEntity {
                 "modifyDate", getModifyDate(),
                 "username", getUsername(),
                 "email", getEmail(),
+                "emailVerified", isEmailVerified(),
+                "nickname", getNickname(),
+                "authLevel", getAuthLevel(),
                 "accessToken", getAccessToken(),
-                "authorities", getAuthorities()
+                "authorities", genAuthorities()
         );
     }
 }
